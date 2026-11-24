@@ -13,4 +13,34 @@ db.exec(`
     )
 `);
 
+const productCount = db.prepare("SELECT COUNT(*) AS count FROM products").get();
+
+if (productCount.count === 0) {
+    const insertProduct = db.prepare(`
+        INSERT INTO products (name, price, sku, description)
+        VALUES (?, ?, ?, ?)
+    `);
+
+    insertProduct.run(
+        "Black T-Shirt",
+        199,
+        "TSH-001",
+        "Black T-Shirt"
+    );
+
+    insertProduct.run(
+        "White T-Shirt",
+        199,
+        "TSH-002",
+        "White T-Shirt"
+    );
+
+    insertProduct.run(
+        "Blue Hoodie",
+        499,
+        "HOD-001",
+        "Blue Hoodie"
+    );
+}
+
 module.exports = db;
