@@ -48,6 +48,28 @@ app.delete("/api/products/:id", (req, res) => {
     res.sendStatus(204);
 });
 
+app.put("/api/products/:id", (req, res) => { //tar emot uppdateringsförfrågan//
+    const id = req.params.id;
+
+    const { name, price, sku, description } = req.body;
+
+    const result = db.prepare(`
+        UPDATE products
+        SET name = ?, price = ?, sku = ?, description = ?
+        WHERE id = ?
+    `).run(name, price, sku, description, id);
+
+    if (result.changes === 0) {
+        return res.sendStatus(404);
+    }
+
+    const updatedProduct = db.prepare(
+        "SELECT * FROM products WHERE id = ?"
+    ).get(id);
+
+    res.json(updatedProduct);
+});
+
 app.listen(PORT, () => {
     console.log(`Servern körs på http://localhost:${PORT}`);
 });
